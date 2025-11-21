@@ -26,6 +26,7 @@ class SeriesController extends Controller{
 
     public function store (SeriesFormRequest $request){
 
+        $serie = DB::transaction(function() use ($request){
         $serie = Serie::create($request->all());
         $seasons = [];
 
@@ -48,6 +49,8 @@ class SeriesController extends Controller{
             }
         }
         Episode::insert($episodes);
+        return $serie;
+    });
 
         return to_route('series.index')->with('mensagem.sucesso', "Serie '{$serie->nome}' adicionada com sucesso!");
         
